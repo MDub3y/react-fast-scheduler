@@ -1,5 +1,3 @@
-import * as React from "react";
-
 export type {
   BaseSchedulerResource,
   RenderSchedulerAppt,
@@ -8,5 +6,4 @@ export type {
   SchedulerEvent,
   SchedulerId,
   SchedulerProps
-} from "./types";
-export { Scheduler } from "./components/Scheduler";
+} from "./scheduler";
