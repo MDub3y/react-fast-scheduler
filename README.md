@@ -2,6 +2,8 @@
 
 A lightweight React scheduling library scaffold with CI/CD publishing.
 
+![img.png](https://bg-so-1.zippyimage.com/2026/03/20/9f3bd8a7a76d94f6e110aa0a0bef11d3.png)
+
 ## Install
 
 ```bash
