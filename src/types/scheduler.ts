@@ -49,6 +49,28 @@ export type SchedulerDragState<TResourceId extends SchedulerId> =
 
 export type RenderSchedulerAppt<TAppointment, TResourceId extends SchedulerId> = SchedulerEvent<TAppointment, TResourceId>;
 
+export type SchedulerAppointmentChangeArgs<TAppointment, TResourceId extends SchedulerId> = {
+  kind: "move" | "resize";
+  appointment: TAppointment;
+  previous: {
+    resourceId: TResourceId;
+    start: Date;
+    end: Date;
+  };
+  next: {
+    resourceId: TResourceId;
+    start: Date;
+    end: Date;
+  };
+};
+
+export type SchedulerAppointmentAppearance = {
+  className?: string;
+};
+
+export type SchedulerAppointmentColorToken = string;
+export type SchedulerResourceClassMap = Partial<Record<string, string>>;
+
 export type SchedulerProps<
   TAppointment,
   TResource extends BaseSchedulerResource<TResourceId>,
@@ -65,29 +87,21 @@ export type SchedulerProps<
     start: Date;
     end: Date;
   }) => Promise<void> | void;
-  onAppointmentChange?: (args: {
-    kind: "move" | "resize";
-    appointment: TAppointment;
-    previous: {
-      resourceId: TResourceId;
-      start: Date;
-      end: Date;
-    };
-    next: {
-      resourceId: TResourceId;
-      start: Date;
-      end: Date;
-    };
-  }) => Promise<void> | void;
-  renderResourceHeader: (resource: TResource) => React.ReactNode;
-  renderAppointment: (args: {
+  onAppointmentChange?: (args: SchedulerAppointmentChangeArgs<TAppointment, TResourceId>) => Promise<void> | void;
+  renderResourceHeader?: (resource: TResource) => React.ReactNode;
+  renderAppointment?: (args: {
     appointment: SchedulerEvent<TAppointment, TResourceId> & { lane: number; lanes: number };
     onPointerDown: (e: React.PointerEvent) => void;
     onResizePointerDown: (e: React.PointerEvent) => void;
+    appointmentAppearance?: SchedulerAppointmentAppearance;
     appointmentBackgroundColor?: string;
     drag: SchedulerDragState<TResourceId>;
     suppressClickRef: RefObject<boolean>;
   }) => React.ReactNode;
+  resourceAppointmentClassMap?: SchedulerResourceClassMap;
+  getResourceAppointmentAppearance?: (resource: TResource) => SchedulerAppointmentAppearance | undefined;
+  getResourceAppointmentColorToken?: (resource: TResource) => SchedulerAppointmentColorToken | undefined;
+  appointmentColorTokenClassMap?: Record<SchedulerAppointmentColorToken, string>;
   getResourceAppointmentBackground?: (resource: TResource) => string | undefined;
   renderDatePicker?: (args: {
     selectedDate: Date;

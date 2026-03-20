@@ -21,7 +21,6 @@ import type { BaseSchedulerResource } from "@marco.colia/react-fast-scheduler";
 type Staff = BaseSchedulerResource<number> & {
   firstName: string;
   lastName: string;
-  appointmentColorClass?: string;
 };
 
 type Appointment = {
@@ -35,8 +34,8 @@ type Appointment = {
 };
 
 const initialStaff: Staff[] = [
-  { id: 1, label: "Room A", firstName: "Anna", lastName: "Rossi", appointmentColorClass: "bg-amber-100" },
-  { id: 2, label: "Room B", firstName: "Luca", lastName: "Bianchi", appointmentColorClass: "bg-blue-100" }
+  { id: 1, label: "Room A", firstName: "Anna", lastName: "Rossi" },
+  { id: 2, label: "Room B", firstName: "Luca", lastName: "Bianchi" }
 ];
 
 const initialAppointments: Appointment[] = [
@@ -70,13 +69,6 @@ export function SchedulerExample() {
         getEnd: (a) => a.end,
         getTitle: (a) => `${a.customerName} - ${a.title}`
       }}
-      renderDatePicker={({ selectedDate: value, onSelectedDateChange }) => (
-        <input
-          type="date"
-          value={value.toISOString().slice(0, 10)}
-          onChange={(event) => onSelectedDateChange(new Date(`${event.target.value}T00:00:00`))}
-        />
-      )}
       onAppointmentChange={async ({ appointment, next }) => {
         setAppointments((prev) =>
           prev.map((a) =>
@@ -86,30 +78,10 @@ export function SchedulerExample() {
           )
         );
       }}
-      getResourceAppointmentBackground={(resource) => resource.appointmentColorClass}
-      renderResourceHeader={(resource) => <strong>{resource.label}</strong>}
-      renderAppointment={({ appointment, onPointerDown, onResizePointerDown, appointmentBackgroundColor }) => (
-        <div
-          onPointerDown={onPointerDown}
-          className={`relative h-full cursor-grab overflow-hidden rounded-md border border-slate-300 p-2 pb-5 ${appointmentBackgroundColor ?? "bg-slate-100"}`}
-        >
-          <div className="text-xs font-semibold">{appointment.title}</div>
-          {appointment.raw.description ? (
-            <div className="mt-1 text-[10px] font-medium text-slate-500">
-              {appointment.raw.description}
-            </div>
-          ) : null}
-          <div
-            role="button"
-            aria-label="Resize appointment"
-            onPointerDown={(e) => {
-              e.stopPropagation();
-              onResizePointerDown(e);
-            }}
-            className="absolute inset-x-1 bottom-1 h-2 cursor-ns-resize rounded-full bg-slate-300/90 hover:bg-slate-400"
-          />
-        </div>
-      )}
+      resourceAppointmentClassMap={{
+        "1": "bg-amber-100 dark:bg-amber-950/40",
+        "2": "bg-blue-100 dark:bg-blue-950/40"
+      }}
       dayStart="09:00"
       dayEnd="18:00"
     />
@@ -117,16 +89,80 @@ export function SchedulerExample() {
 }
 ```
 
+`renderAppointment` is optional. If you omit it, the scheduler uses the built-in appointment card with light/dark mode support.
+`renderDatePicker` is optional. If you omit it, the scheduler uses a built-in native date input.
+`onAppointmentChange` is a simple callback: use it to update your state and run your own side effects.
+
 Main props you need to pass:
 - `resources`: your columns (staff, rooms, etc), each with at least `{ id, label }`.
 - `appointments`: raw items from your backend.
 - `adapter`: functions that map your raw appointment shape to scheduler fields.
 - `onAppointmentChange`: optional generic callback fired after move/resize drop.
 - `onPersistMoveResize`: optional legacy persistence callback (used if `onAppointmentChange` is not provided).
-- `getResourceAppointmentBackground`: optional function to provide appointment background color per resource.
+- `resourceAppointmentClassMap`: optional map of `resourceId -> className` for per-resource appointment colors/styles.
+- `getResourceAppointmentColorToken`: optional function to provide a semantic color token per resource (for example `"amber"`).
+- `appointmentColorTokenClassMap`: optional map to override token -> class resolution.
+- `getResourceAppointmentAppearance`: optional low-level function to provide appointment `className` per resource.
+- `getResourceAppointmentBackground`: legacy optional function to provide appointment background as a string.
 - `prevButtonLabel` and `nextButtonLabel`: custom labels for toolbar navigation buttons.
-- `renderDatePicker`: inject your own date picker UI (for example shadcn calendar).
-- `renderResourceHeader`, `renderAppointment`: rendering hooks for your UI.
+- `renderDatePicker`: optional render hook for a custom date picker UI (for example shadcn calendar).
+- `renderResourceHeader`: optional render hook for resource column headers.
+- `renderAppointment`: optional render hook to fully customize appointment cards.
+
+### Resource classes by id (recommended)
+
+```tsx
+<Scheduler
+  // ...other props
+  resourceAppointmentClassMap={{
+    "room-a": "bg-yellow-100 dark:bg-yellow-950/40",
+    "room-b": "bg-rose-100 dark:bg-rose-950/40"
+  }}
+/>
+```
+
+### Resource color tokens (optional)
+
+```tsx
+<Scheduler
+  // ...other props
+  getResourceAppointmentColorToken={(resource) => resource.category}
+  appointmentColorTokenClassMap={{
+    vip: "bg-yellow-100 dark:bg-yellow-950/40",
+    urgent: "bg-rose-100 dark:bg-rose-950/40"
+  }}
+/>
+```
+
+### Custom appointment renderer (optional)
+
+```tsx
+<Scheduler
+  // ...other props
+  renderAppointment={({ appointment, onPointerDown, onResizePointerDown, appointmentAppearance, appointmentBackgroundColor }) => (
+    <div
+      onPointerDown={onPointerDown}
+      className={`relative h-full cursor-grab overflow-hidden rounded-md border border-slate-300 p-2 pb-5 ${
+        appointmentAppearance?.className ?? appointmentBackgroundColor ?? "bg-slate-100"
+      }`}
+    >
+      <div className="text-xs font-semibold">{appointment.title}</div>
+      {appointment.raw.description ? (
+        <div className="mt-1 text-[10px] font-medium text-slate-500">{appointment.raw.description}</div>
+      ) : null}
+      <div
+        role="button"
+        aria-label="Resize appointment"
+        onPointerDown={(e) => {
+          e.stopPropagation();
+          onResizePointerDown(e);
+        }}
+        className="absolute inset-x-1 bottom-1 h-2 cursor-ns-resize rounded-full bg-slate-300/90 hover:bg-slate-400"
+      />
+    </div>
+  )}
+/>
+```
 
 ### shadcn Calendar Date Picker
 
