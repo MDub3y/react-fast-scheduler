@@ -5,16 +5,16 @@ A lightweight React scheduling library scaffold with CI/CD publishing.
 ## Install
 
 ```bash
-npm i @justoverclockl/react-fast-scheduler
+npm i @marco.colia/react-fast-scheduler
 ```
 
 ## Usage
 
 ```tsx
 import { useState } from "react";
-import { Scheduler } from "@justoverclockl/react-fast-scheduler";
-import "@justoverclockl/react-fast-scheduler/styles.css";
-import type { BaseSchedulerResource } from "@justoverclockl/react-fast-scheduler";
+import { Scheduler } from "@marco.colia/react-fast-scheduler";
+import "@marco.colia/react-fast-scheduler/styles.css";
+import type { BaseSchedulerResource } from "@marco.colia/react-fast-scheduler";
 
 type Staff = BaseSchedulerResource<number> & {
   firstName: string;
@@ -158,7 +158,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 The package ships a precompiled CSS file generated from Tailwind:
 
 ```tsx
-import "@justoverclockl/react-fast-scheduler/styles.css";
+import "@marco.colia/react-fast-scheduler/styles.css";
 ```
 
 Minimal app entry example:
@@ -167,7 +167,7 @@ Minimal app entry example:
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { SchedulerExample } from "./SchedulerExample";
-import "@justoverclockl/react-fast-scheduler/styles.css";
+import "@marco.colia/react-fast-scheduler/styles.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(<SchedulerExample />);
 ```
