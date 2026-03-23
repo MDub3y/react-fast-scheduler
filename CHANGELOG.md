@@ -1,5 +1,11 @@
 # react-fast-scheduler
 
+## 2.1.1
+
+### Patch Changes
+
+- [#14](https://github.com/justoverclockl/react-fast-scheduler/pull/14) [`90f41f7`](https://github.com/justoverclockl/react-fast-scheduler/commit/90f41f758940c917a8c0a545edbb00acfc113e64) Thanks [@justoverclockl](https://github.com/justoverclockl)! - customizable toolbar and sticky column in mobile
+
 ## 2.1.0
 
 ### Minor Changes
