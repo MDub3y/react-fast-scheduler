@@ -1,5 +1,11 @@
 # react-fast-scheduler
 
+## 2.1.0
+
+### Minor Changes
+
+- [#11](https://github.com/justoverclockl/react-fast-scheduler/pull/11) [`3ef5560`](https://github.com/justoverclockl/react-fast-scheduler/commit/3ef55602d74f8aef75ce3d743f0a81d3a422d960) Thanks [@justoverclockl](https://github.com/justoverclockl)! - Folder organization improved
+
 ## 2.0.0
 
 ### Major Changes
