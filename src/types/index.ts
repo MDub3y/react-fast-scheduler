@@ -9,5 +9,6 @@ export type {
   SchedulerDragState,
   SchedulerEvent,
   SchedulerId,
+  SchedulerToolbarRenderArgs,
   SchedulerProps
 } from "./scheduler";

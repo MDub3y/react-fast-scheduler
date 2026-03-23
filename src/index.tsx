@@ -9,6 +9,7 @@ export type {
   SchedulerDragState,
   SchedulerEvent,
   SchedulerId,
+  SchedulerToolbarRenderArgs,
   SchedulerProps
 } from "./types";
 export { Scheduler } from "./components/scheduler";

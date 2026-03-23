@@ -1,20 +1,21 @@
 import * as React from "react";
+import { format } from "date-fns";
 import type { DefaultRenderDatePickerProps } from "./types";
-import { fromInputDateValue, toInputDateValue } from "../../utils/scheduler-core.utils";
+import { Button } from "../ui/button";
+import { Calendar } from "../ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export function defaultRenderDatePicker({ selectedDate, onSelectedDateChange }: DefaultRenderDatePickerProps) {
   return (
-    <input
-      type="date"
-      value={toInputDateValue(selectedDate)}
-      onChange={(event) => {
-        const nextDate = fromInputDateValue(event.target.value);
-        if (nextDate) {
-          onSelectedDateChange(nextDate);
-        }
-      }}
-      className="h-7 rounded-md border border-border bg-card px-2 text-xs text-foreground"
-      aria-label="Select date"
-    />
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm" className="min-w-40 justify-start text-left font-normal">
+          {format(selectedDate, "PPP")}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-2" align="center">
+        <Calendar selected={selectedDate} onSelect={onSelectedDateChange} />
+      </PopoverContent>
+    </Popover>
   );
 }

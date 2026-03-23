@@ -2,6 +2,7 @@ import * as React from "react";
 import { defaultRenderAppointment } from "../defaultRenderAppointment";
 import { defaultRenderDatePicker } from "../defaultRenderDatePicker";
 import { defaultRenderResourceHeader } from "../defaultRenderResourceHeader";
+import { defaultRenderToolbar } from "../defaultRenderToolbar";
 import { GUTTER_W, MIN_EVENT_MIN, PX_PER_MIN, RESOURCE_MIN_W, STEP_MIN, TOP_PAD } from "../constants";
 import type { BaseSchedulerResource, SchedulerId, SchedulerProps } from "../../types/scheduler";
 import { useSchedulerBaseData } from "../../hooks/useSchedulerBaseData";
@@ -24,6 +25,7 @@ export function Scheduler<TAppointment, TResource extends BaseSchedulerResource<
   getResourceAppointmentColorToken,
   appointmentColorTokenClassMap,
   getResourceAppointmentBackground,
+  renderToolbar,
   renderDatePicker,
   prevButtonLabel = "Prev",
   nextButtonLabel = "Next",
@@ -84,6 +86,28 @@ export function Scheduler<TAppointment, TResource extends BaseSchedulerResource<
     });
 
   const defaultResourceHeaderRenderer = (resource: TResource) => defaultRenderResourceHeader({ resource });
+  const goToPreviousDay = () => onSelectedDateChange(shiftDays(selectedDate, -1));
+  const goToNextDay = () => onSelectedDateChange(shiftDays(selectedDate, 1));
+  const defaultDatePicker = (renderDatePicker ?? defaultRenderDatePicker)({ selectedDate, onSelectedDateChange });
+  const toolbar = renderToolbar ? (
+    renderToolbar({
+      selectedDate,
+      onSelectedDateChange,
+      goToPreviousDay,
+      goToNextDay,
+      defaultDatePicker
+    })
+  ) : (
+    defaultRenderToolbar({
+      selectedDate,
+      onSelectedDateChange,
+      goToPreviousDay,
+      goToNextDay,
+      defaultDatePicker,
+      prevButtonLabel,
+      nextButtonLabel
+    })
+  );
 
   return (
     <section
@@ -92,23 +116,7 @@ export function Scheduler<TAppointment, TResource extends BaseSchedulerResource<
       onPointerUp={onGlobalPointerUp}
       onPointerCancel={onGlobalPointerUp}
     >
-      <div className="rfs-toolbar">
-        <button
-          className="rfs-btn border-border bg-card text-foreground hover:bg-muted"
-          type="button"
-          onClick={() => onSelectedDateChange(shiftDays(selectedDate, -1))}
-        >
-          {prevButtonLabel}
-        </button>
-        {(renderDatePicker ?? defaultRenderDatePicker)({ selectedDate, onSelectedDateChange })}
-        <button
-          className="rfs-btn border-border bg-card text-foreground hover:bg-muted"
-          type="button"
-          onClick={() => onSelectedDateChange(shiftDays(selectedDate, 1))}
-        >
-          {nextButtonLabel}
-        </button>
-      </div>
+      {toolbar}
 
       <div className="rfs-shell border-border bg-card">
         <div style={{ minWidth: gridMinWidth }}>

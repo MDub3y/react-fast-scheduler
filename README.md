@@ -90,7 +90,8 @@ export function SchedulerExample() {
 ```
 
 `renderAppointment` is optional. If you omit it, the scheduler uses the built-in appointment card with light/dark mode support.
-`renderDatePicker` is optional. If you omit it, the scheduler uses a built-in native date input.
+`renderToolbar` is optional. If you omit it, the scheduler uses a built-in shadcn-style toolbar with prev/next buttons and a calendar popover date picker.
+`renderDatePicker` is optional. If you omit it, the default toolbar uses the built-in calendar popover date picker.
 `onAppointmentChange` is a simple callback: use it to update your state and run your own side effects.
 
 Main props you need to pass:
@@ -104,8 +105,9 @@ Main props you need to pass:
 - `appointmentColorTokenClassMap`: optional map to override token -> class resolution.
 - `getResourceAppointmentAppearance`: optional low-level function to provide appointment `className` per resource.
 - `getResourceAppointmentBackground`: legacy optional function to provide appointment background as a string.
+- `renderToolbar`: optional render hook to replace the entire scheduler toolbar/header controls.
 - `prevButtonLabel` and `nextButtonLabel`: custom labels for toolbar navigation buttons.
-- `renderDatePicker`: optional render hook for a custom date picker UI (for example shadcn calendar).
+- `renderDatePicker`: optional render hook for the date picker slot used by the default toolbar.
 - `renderResourceHeader`: optional render hook for resource column headers.
 - `renderAppointment`: optional render hook to fully customize appointment cards.
 
@@ -164,7 +166,32 @@ Main props you need to pass:
 />
 ```
 
-### shadcn Calendar Date Picker
+### Custom toolbar
+
+```tsx
+<Scheduler
+  // ...other props
+  renderToolbar={({ selectedDate, goToPreviousDay, goToNextDay, defaultDatePicker }) => (
+    <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 py-3">
+      <div>
+        <div className="text-sm font-medium">{selectedDate.toDateString()}</div>
+        <div className="text-xs text-muted-foreground">Team schedule</div>
+      </div>
+      <div className="flex items-center gap-2">
+        <button className="rounded-md border px-3 py-2 text-sm" type="button" onClick={goToPreviousDay}>
+          Previous
+        </button>
+        {defaultDatePicker}
+        <button className="rounded-md border px-3 py-2 text-sm" type="button" onClick={goToNextDay}>
+          Next
+        </button>
+      </div>
+    </div>
+  )}
+/>
+```
+
+### Custom date picker slot
 
 ```tsx
 import { Button } from "@/components/ui/button";
@@ -248,4 +275,5 @@ This repo uses [Changesets](https://github.com/changesets/changesets) and GitHub
 1. Create a changeset: `npx changeset`
 2. Merge to `main`
 3. The `Release` workflow opens/updates a release PR
-4. Merging that PR publishes to npm (via npm Trusted Publishing/OIDC, or `NPM_TOKEN` if configured)
+4. Merging that PR publishes to npm via npm Trusted Publishing and GitHub OIDC
+4. Merging that PR publishes to npm via npm Trusted Publishing and GitHub OIDC

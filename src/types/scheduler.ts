@@ -70,6 +70,13 @@ export type SchedulerAppointmentAppearance = {
 
 export type SchedulerAppointmentColorToken = string;
 export type SchedulerResourceClassMap = Partial<Record<string, string>>;
+export type SchedulerToolbarRenderArgs = {
+  selectedDate: Date;
+  onSelectedDateChange: (date: Date) => void;
+  goToPreviousDay: () => void;
+  goToNextDay: () => void;
+  defaultDatePicker: React.ReactNode;
+};
 
 export type SchedulerProps<
   TAppointment,
@@ -103,6 +110,7 @@ export type SchedulerProps<
   getResourceAppointmentColorToken?: (resource: TResource) => SchedulerAppointmentColorToken | undefined;
   appointmentColorTokenClassMap?: Record<SchedulerAppointmentColorToken, string>;
   getResourceAppointmentBackground?: (resource: TResource) => string | undefined;
+  renderToolbar?: (args: SchedulerToolbarRenderArgs) => React.ReactNode;
   renderDatePicker?: (args: {
     selectedDate: Date;
     onSelectedDateChange: (date: Date) => void;
