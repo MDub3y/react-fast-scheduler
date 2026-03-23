@@ -2,6 +2,9 @@ import * as React from "react";
 import {createRoot} from "react-dom/client";
 import {Scheduler} from "../src";
 import type {BaseSchedulerResource} from "../src";
+import {Button} from "../src/components/ui/button";
+import {Calendar} from "../src/components/ui/calendar";
+import {Popover, PopoverContent, PopoverTrigger} from "../src/components/ui/popover";
 import "../src/global.css";
 import "./styles.css";
 
@@ -52,8 +55,6 @@ function App() {
                 appointments={appointments}
                 selectedDate={selectedDate}
                 onSelectedDateChange={setSelectedDate}
-                prevButtonLabel="Indietro"
-                nextButtonLabel="Avanti"
                 adapter={{
                     getId: (item) => item.id,
                     getResourceId: (item) => item.resourceId,
@@ -61,18 +62,31 @@ function App() {
                     getEnd: (item) => item.end,
                     getTitle: (item) => item.title
                 }}
-                renderDatePicker={({selectedDate: value, onSelectedDateChange}) => (
-                    <input
-                        type="date"
-                        className="rounded-md border border-slate-300 bg-white px-2 py-1 text-xs"
-                        value={value.toISOString().slice(0, 10)}
-                        onChange={(event) => {
-                            const next = new Date(`${event.target.value}T00:00:00`);
-                            if (!Number.isNaN(next.getTime())) {
-                                onSelectedDateChange(next);
-                            }
-                        }}
-                    />
+                renderToolbar={({selectedDate: value, onSelectedDateChange, goToPreviousDay, goToNextDay}) => (
+                    <div className="mb-4 flex flex-col gap-3 rounded-xl border border-border bg-card p-3 shadow-sm md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <div className="text-sm font-semibold text-foreground">Team schedule</div>
+                            <div className="text-xs text-muted-foreground">{value.toDateString()}</div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Button variant="outline" size="sm" onClick={goToPreviousDay}>
+                                Indietro
+                            </Button>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button variant="outline" size="sm" className="min-w-40 justify-start text-left font-normal">
+                                        {value.toDateString()}
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-2" align="center">
+                                    <Calendar selected={value} onSelect={onSelectedDateChange}/>
+                                </PopoverContent>
+                            </Popover>
+                            <Button variant="outline" size="sm" onClick={goToNextDay}>
+                                Avanti
+                            </Button>
+                        </div>
+                    </div>
                 )}
                 onAppointmentChange={async ({next, appointment}) => {
                     setAppointments((prev) =>
