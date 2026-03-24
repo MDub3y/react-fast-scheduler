@@ -2,7 +2,7 @@ import * as React from "react";
 import { defaultRenderDatePicker } from "../../defaultRenderDatePicker";
 import { defaultRenderToolbar } from "../../defaultRenderToolbar";
 import { shiftDays } from "../../../utils/scheduler-core.utils";
-import type { SchedulerToolbarRenderArgs } from "../../../types/scheduler";
+import type { SchedulerToolbarRenderArgs } from "../../../types";
 
 type SchedulerToolbarProps = {
   selectedDate: Date;
